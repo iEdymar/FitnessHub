@@ -22,7 +22,7 @@ Tony Matheus de Lima Oliveira, 540684, Design Digital
 ## Principais funcionalidades da aplicação
 
 - Usuários não registrados poderão ver a descrição do produto e os comentários a respeito dele.
-- Usuários registrados podem ver o produto internamente, como planilhas de treinos e e-books. Adicionalmente, eles podem escrever comentários sobre eles.
+- Usuários registrados têm acesso ao conteúdo completo das fichas de treino, incluindo dentro do conteúdo planilhas e e-books. Além disso, têm permissão para deixar comentários sobre esses materiais.
 - O administrador da loja pode adicionar, remover, atualizar e editar os conteudos dentro da ficha de treino.
 
 ## Tecnologias e frameworks utilizados
