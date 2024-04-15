@@ -1,6 +1,6 @@
 # FitnessHub   
 
-Uma loja online destinada a venda de fichas de treino digital com foco fitness.
+Uma loja online especializada na venda de fichas de treino digital.
 
 ## Membros da equipe
 
