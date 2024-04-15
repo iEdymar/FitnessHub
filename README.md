@@ -1,8 +1,6 @@
 # FitnessHub   
 
-Uma loja online destinada a vendas de produtos digitais com foco fitness.
-
-Para executar este projeto siga os passos descritos no arquivo [passo-a-passo](passo-a-passo.md)
+Uma loja online destinada a venda de fichas de treino digital com foco fitness.
 
 ## Membros da equipe
 
@@ -18,14 +16,14 @@ Tony Matheus de Lima Oliveira, 540684, Design Digital
 ## Entidades ou tabelas do sistema
 
 - Usuário
-- Planilhas e Ebooks
+- Ficha de Treino
 - Comentário
 
 ## Principais funcionalidades da aplicação
 
-- Usuários não registrados poderão ver a descrição dos produtos e os comentários a respeito deles.
-- Usuários registrados podem ver os produtos internamente, como planilhas de treinos e e-books. Adicionalmente, eles podem escrever comentários sobre eles.
-- O administrador da loja pode adicionar, remover, atualizar e editar as planilhas ou e-books.
+- Usuários não registrados poderão ver a descrição do produto e os comentários a respeito dele.
+- Usuários registrados podem ver o produto internamente, como planilhas de treinos e e-books. Adicionalmente, eles podem escrever comentários sobre eles.
+- O administrador da loja pode adicionar, remover, atualizar e editar os conteudos dentro da ficha de treino.
 
 ## Tecnologias e frameworks utilizados
 
@@ -44,7 +42,7 @@ Tony Matheus de Lima Oliveira, 540684, Design Digital
 | Entidade| Criação | Leitura | Atualização | Remoção |
 | --- | --- | --- | --- | --- |
 | Usuário |  |  |  |  |
-| Planilha/Ebooks | X  | X |  X | X |
+| Ficha de Treino | X  | X |  X | X |
 | Comentário | X |  X  |  | X |
 
 > Lembre-se que é necessário implementar o CRUD de pelo menos duas entidades.
@@ -55,8 +53,8 @@ Tony Matheus de Lima Oliveira, 540684, Design Digital
 | --- | --- |
 | POST | /auth/local |
 | GET | /users/me |
-| GET | /api/planilhas |
-| GET | /api/planilhas/{id} |
-| POST | /api/planilhas |
-| PUT | /api/planilhas/{id} |
-| DELETE | /api/planilhas/{id} |
+| GET | /api/ficha |
+| GET | /api/ficha/{id} |
+| POST | /api/ficha |
+| PUT | /api/ficha/{id} |
+| DELETE | /api/ficha/{id} |
