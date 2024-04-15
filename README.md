@@ -6,7 +6,7 @@ Para executar este projeto siga os passos descritos no arquivo [passo-a-passo](p
 
 ## Membros da equipe
 
-Francisco Edimar Matias de Sousa, 541087, Design Digital
+Francisco Edimar Matias de Sousa, 541087, Design Digital <br>
 Tony Matheus de Lima Oliveira, 540684, Design Digital
 
 ## Papéis ou tipos de usuário da aplicação
