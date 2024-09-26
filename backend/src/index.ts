@@ -1,29 +1,32 @@
 import express from 'express';
+import cors from 'cors';
 import userRoutes from './routes/userRoutes';
 import { AppDataSource } from './DataSource';
+import authRoutes from './routes/authRoutes';
+import fileRoutes from './routes/fileRoutes';
 
 async function startServer() {
     try {
-        // Inicializa a conexão com o banco de dados
         await AppDataSource.initialize();
 
-        // Inicializa o servidor Express
         const app = express();
         const port = 3000;
 
-        // Configuração de middleware
-        app.use(express.json());
-        app.use('/users', userRoutes); // Define as rotas de usuário
+        app.use(cors()); 
 
-        // Inicia o servidor
+        app.use(express.json());
+
+        app.use('/users', userRoutes);
+        app.use('/auth', authRoutes);
+        app.use('/treinos', fileRoutes);
+
         app.listen(port, () => {
             console.log(`Servidor escutando na porta ${port} em http://localhost:${port}`);
         });
     } catch (error) {
         console.error('Erro ao inicializar o DataSource:', error);
-        process.exit(1); // Finaliza o processo se houver erro crítico
+        process.exit(1);
     }
 }
 
-// Chama a função para iniciar o servidor
 startServer();

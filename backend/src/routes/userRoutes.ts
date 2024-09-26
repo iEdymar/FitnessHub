@@ -1,149 +1,142 @@
-import { Router } from 'express'
-import { AppDataSource } from '../DataSource'
-import { User } from '../entity/User'
-import { Role } from '../entity/Role'
+import { Router } from 'express';
+import { AppDataSource } from '../DataSource';
+import { User } from '../entity/User';
+import { Role } from '../entity/Role';
+import { authenticateToken } from '../middleware/AuthMiddleware';
 
-const router = Router()
+const router = Router();
 
-const users: User[] = []
+// Criar 
+router.post('/', async (req, res) => {
+  const { name, username, email, password, role } = req.body;
 
-//criar
-router.post('/users', async (req, res) => {
-    const {name, username, email, password, role} = req.body
-    if(!name || !username || !email || !password || !role) {
-        return res.status(400).json({
-            error: {
-                status: 400,
-                name: 'Validation error',
-                message: 'You missed a required field'
-            }
-        })
-    }
+  if (!name || !username || !email || !password || !role) {
+    return res.status(400).json({
+      error: {
+        status: 400,
+        name: 'Validation error',
+        message: 'You missed a required field',
+      },
+    });
+  }
 
+  const userRepository = AppDataSource.getRepository(User);
+  const roleRepository = AppDataSource.getRepository(Role);
 
-    const userRepository = AppDataSource.getRepository(User)
-    const roleRepository = AppDataSource.getRepository(Role)
+  let roleInDB = await roleRepository.findOne({ where: { name: role } });
+  if (!roleInDB) {
+    roleInDB = roleRepository.create({ name: role });
+    await roleRepository.save(roleInDB);
+  }
 
-    let roleInDB = await roleRepository.findOne({ where: { name: role}})
-    if(!roleInDB) {
-        roleInDB = roleRepository.create({ name: role })
-        await roleRepository.save(roleInDB)
-    }
+  const newUser = userRepository.create({
+    name,
+    username,
+    email,
+    password,
+    role: roleInDB,
+  });
 
-    const newUser = userRepository.create({
-        name,
-        username,
-        email,
-        password,
-        role: roleInDB
-    })
+  await userRepository.save(newUser);
+  res.status(201).json({ data: newUser });
+});
 
-    await userRepository.save(newUser)
-    res.status(201).json
-    data: newUser
-})
+// Listar
+router.get('/', authenticateToken, async (req, res) => {
+  const userRepository = AppDataSource.getRepository(User);
+  const users = await userRepository.find({ relations: ['role'] });
+  res.json({ data: users });
+});
 
-//listar 
-router.get('/users', authenticateToken, async (req, res) => {
-    const userRepository = AppDataSource.getRepository(User)
-    const users = await userRepository.find({ relations: ['role']})
-    res.json({
-        data: users
-    })
-})
+// Buscar 
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  const userRepository = AppDataSource.getRepository(User);
 
-router.get('/:id', async(req, res) => {
-    const { id } = req.params
-    const userRepository = AppDataSource.getRepository(User)
+  const user = await userRepository.findOne({
+    where: {
+      id: parseInt(id),
+    },
+    relations: ['role'],
+  });
 
-    const user = await userRepository.findOne({ 
-        where: {
-            id: parseInt(id)
-        }, 
-        relations: ['role']})
+  if (!user) {
+    return res.status(404).json({
+      error: {
+        status: 404,
+        name: 'NotFound',
+        message: 'User not found',
+      },
+    });
+  }
 
-    if(!user) {
-        return res.status(404).json({
-            error: {
-                status: 404,
-                name: 'NotFound',
-                message: 'UserNotFound'
-            }
-        })
-    }
+  res.json({ data: user });
+});
 
-    res.json({
-        data: user
-    })
-})
+// Atualizar
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, username, email, password, role } = req.body;
 
+  const userRepository = AppDataSource.getRepository(User);
+  const roleRepository = AppDataSource.getRepository(Role);
 
-router.put('/:id', async(req, res) => {
-    const { id } = req.params
-    const {name, username, email, password, role} = req.body
+  const user = await userRepository.findOne({
+    where: {
+      id: parseInt(id),
+    },
+    relations: ['role'],
+  });
 
-    const userRepository = AppDataSource.getRepository(User)
-    const roleRepository = AppDataSource.getRepository(Role)
-    const user = await userRepository.findOne({
-        where: {
-            id: parseInt(id)
-        },
-        relations: ['role']
-    })
-    if(!user) {
-        return res.status(404).json({
-            error: {
-                status: 404,
-                name: 'NotFound',
-                message: 'User Not Found'
-            }
-        })
-    }
-    let roleInDB = await roleRepository.findOne({ where: { name: role}})
+  if (!user) {
+    return res.status(404).json({
+      error: {
+        status: 404,
+        name: 'NotFound',
+        message: 'User not found',
+      },
+    });
+  }
 
+  let roleInDB = await roleRepository.findOne({ where: { name: role } });
 
-    if(!roleInDB) {
-        roleInDB = roleRepository.create({ name: role})
-        await roleRepository.save(roleInDB)
-    }
+  if (!roleInDB) {
+    roleInDB = roleRepository.create({ name: role });
+    await roleRepository.save(roleInDB);
+  }
 
-    const userIndex = users.findIndex(u => u.id === parseInt(id))
+  user.name = name || user.name;
+  user.username = username || user.username;
+  user.email = email || user.email;
+  user.password = password || user.password;
+  user.role = roleInDB || user.role;
 
+  await userRepository.save(user);
 
-    const updateUser = {
-        id: parseInt(id),
-        name: name || users[userIndex].name,
-        username: username || users[userIndex].username,
-        password: password || users[userIndex].password,
-        email: email || users[userIndex].email,
-        role: role || users[userIndex].role
-    }
+  res.status(200).json({ data: user });
+});
 
-    users[userIndex] = updateUser
-    res.status(200).json ({
-        data:updateUser
-    })
-})
+// Deletar
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
 
-router.delete('/:id', (req, res) => {
-    const { id } = req.params
-    const userIndex = users.findIndex(u => u.id === parseInt(id))
+  const userRepository = AppDataSource.getRepository(User);
 
-    if (userIndex == -1) {
-        return res.status(404).json({
-            error: {
-                status: 404,
-                name: 'NotFound',
-                message: 'UserNotFound',
-            }
-        })
-    }
+  const user = await userRepository.findOne({ where: { id: parseInt(id) } });
 
-    const deletedUser = users.splice(userIndex, 1) [0]
-    res.status(202).json ({
-        data: deletedUser
-    })
-})
+  if (!user) {
+    return res.status(404).json({
+      error: {
+        status: 404,
+        name: 'NotFound',
+        message: 'User not found',
+      },
+    });
+  }
 
+  await userRepository.remove(user);
 
-export default router
+  res.status(202).json({ data: user });
+});
+
+export default router;

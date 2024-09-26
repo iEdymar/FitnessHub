@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import { Order } from "./Order";
-import { file } from "./file";
+import { File } from "./File";
 
 @Entity()
 export class OrderItem {
@@ -10,11 +10,8 @@ export class OrderItem {
     @ManyToOne(() => Order, order => order.items)
     order!: Order
 
-    @ManyToOne(() => file)
-    file!: file
-
-    @Column('int')
-    quantity!: number
+    @ManyToOne(() => File)
+    file!: File
 
     @Column('decimal')
     price!: number

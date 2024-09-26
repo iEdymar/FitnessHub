@@ -2,10 +2,11 @@ import { Router } from "express";
 import { AppDataSource } from "../DataSource";
 import { User } from "../entity/User";
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-dotenv.config();
+import 'dotenv/config';
 
 const router = Router();
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 router.post('/login', async(req, res) => {
     const { username, password } = req.body
@@ -13,7 +14,7 @@ router.post('/login', async(req, res) => {
 
     const user = await userRepository.findOne({ where: { username }, relations: ['role']});
     if (!user || password !== user.password) {
-        return res.status(400).json({ message: 'Invalide password or username, please try again'})
+        return res.status(400).json({ message: 'Usuário ou senha inválidos'})
     }
 
     const token = jwt.sign({ id: user.id, role: user.role.name }, process.env.JWT_SECRET!, { expiresIn: '1h'})

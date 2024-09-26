@@ -1,16 +1,16 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class file {
+export class File {
     @PrimaryGeneratedColumn()
-    id!: number
+    id!: number;
 
     @Column()
-    title!: string
+    title!: string;
 
     @Column('decimal')
-    price!: number
+    price!: number;
 
-    @Column('int')
-    stock! = number
+    @Column('blob')
+    content!: Buffer;
 }
